@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="layout">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang chủ</title>
+</head>
+<body>
+<div layout:fragment="content" class="container body-content">
+
+  <div class='sign'>
+    <div class="sign__cover" style="animation: none">
+      <div className="sign__logo">
+        <h2>Enter Password</h2>
+        <p style="margin-top: 0.5rem; color: rgb(117, 117, 117);">Please enter your password address to complete register.</p>
+      </div>
+
+      <form th:action="@{/verify}" th:object="${user}" method="post">
+        <input type="hidden" th:field="*{name}">
+        <input type="hidden" th:field="*{phone}">
+        <input type="hidden" th:field="*{email}">
+        <div class="input">
+          <input id="password" th:field="*{password}" type="password" placeholder="Password" required />
+        </div>
+        <div class="input">
+          <input th:field="*{confirmPassword}" type="password"  placeholder="Confirm Password" required />
+        </div>
+        <small th:if="${checkError}" th:text="${checkError}" class="form-text text-danger"></small>
+        <div class="login">
+          <button type="submit" class="btn-login">Submit</button>
+        </div>
+        <div class="signin_q" style="marginTop: .5rem">
+          Not a member? <a th:href="@{/register}">Register</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+

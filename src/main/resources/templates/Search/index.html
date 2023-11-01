@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="layout"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content" class="container body-content">
+  <div class="quality__content" style="padding:0 30px">
+    <div class="quality__card" style="display: grid; grid-template-columns: auto auto auto; grid-gap: 30px;">
+      <div th:each="course : ${courses}" class="card" style="background: transparent">
+        <a th:href="@{/learning/{id}(id=${course.id})}">
+          <div class="card__cover">
+            <div class="card__top">
+              <div class="card__img">
+                <img th:src="${course.thumbnail}" alt="image-of-course">
+              </div>
+            </div>
+            <div class="card__bottom">
+              <div class=="card__title">
+                <h2 th:text="${course.title}"></h2>
+              </div>
+              <div class=="card__content" th:text="${course.description}"></div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

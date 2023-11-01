@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <main  class="page" style="color: black">
+    <section style="background: #142052; padding: 0 100px" class="shopping-cart dark">
+      <div class="container">
+        <div class="block-heading">
+          <h4 style="color: white; text-align: left">Bag</h4>
+        </div>
+        <div  class="content">
+          <div style="background: #142052"  class="row">
+            <div class="col-md-12 col-lg-8">
+              <div  th:if="${check}" class="items" style="border-bottom: solid 0.5px whitesmoke" th:each="item : ${courses}">
+                <div class="product">
+                  <div class="row" >
+                    <div class="col-md-3">
+                      <img class="img-fluid mx-auto d-block image" style="width: 70%" th:src="@{/img/}+${item.book.image}">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="info" >
+                        <div class="row">
+                          <div class="col-md-4 product-name">
+                            <div class="product-name">
+                              <div class="product-info">
+                                <div><h5 class="value" th:text="${item.book.title}"></h5></div>
+                                <div><span class="value" th:text="${item.book.category.name}"></span></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3 quantity">
+                            <label for="quantity">Quantity:</label>
+                            <input min="1" max="99" onchange="handleQuantityChange(this)" th:attr="data-item-id=${item.book.id}"  id="quantity" type="number" th:value="${item.quantity}" class="form-control quantity-input">
+                          </div>
+                          <div class="col-md-3 price">
+                            <span th:text="${item.book.price}"></span>
+                          </div>
+                          <div class="col-md-2 price" style="text-align: right; font-size: 15px">
+                            <form th:action="@{/cart/delete/{id}(id=${item.book.id})}" method="Get">
+                              <button type="submit" style="background: transparent"><i class="fa-solid fa-trash-can"></i></button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div  th:if="${!check}">There are no items in your bag.</div>
+            </div>
+            <div class="col-md-12 col-lg-4">
+              <div style="background: #142052" class="summary">
+                <h3>Summary</h3>
+                <div class="summary-item"><span class="text">Subtotal</span><span class="price" th:text="${total}"></span></div>
+                <div class="summary-item"><span class="text">Discount</span><span class="price">0</span></div>
+                <div class="summary-item"><span class="text">Shipping</span><span class="price">0</span></div>
+                <div class="summary-item"><span class="text">Total</span><span class="price" th:text="${total}">$360</span></div>
+                <form th:action="@{/cart/checkout}" method="post">
+                  <input type="hidden" name="total" th:value="${total}" />
+                <button style="background: #18C2C0" type="submit" class="btn btn-primary btn-lg btn-block">Checkout</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script th:inline="javascript">
+const handleQuantityChange = (a) => {
+
+  const itemId = a.getAttribute('data-item-id')
+  const quantity = a.value
+  let token = $("meta[name='_csrf']").attr("content");
+  let header = $("meta[name='_csrf_header']").attr("content");
+  if (quantity < 1) {
+    a.value = 1;
+  }
+  if(quantity > 99) {
+    a.value = 99;
+  }
+  $.ajax({
+          type: 'POST',
+          url: '/cart/update', // Điều hướng đến controller method để cập nhật dữ liệu
+          data: {
+            id:itemId /* Lấy ID của sản phẩm từ Thymeleaf expression */,
+            quantity: quantity
+          },
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token);
+          },
+          success: function(data) {
+            // Xử lý kết quả nếu cần
+            window.location.href = '/cart';
+          },
+          error: function(error) {
+            // Xử lý lỗi nếu có
+            window.location.href = '/cart';
+
+          }
+        });
+}
+
+  </script>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link layout:fragment="style" th:href="@{/css/styles.css}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Instructor</title>
+  <style>
+    body {
+      background: #00082a;
+    }
+    .sidebar {
+      padding-left: 10px;
+      text-align: left;
+      position: fixed;
+      top: 0px;
+      left: 0;
+      height: 100vh;
+      width: 250px;
+      background-color: #343a40;
+      transition: width 0.3s ease-in-out;
+      overflow-y: auto;
+      padding-top: 20px;
+    }
+
+    .sidebar a {
+      transition: .5s;
+      margin-top: 20px;
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: white;
+      text-align: left;
+      width: 200px;
+      font-size: 25px;
+    }
+    .sidebar a i {
+   margin-right: 40px;
+    }
+
+    .sidebar a:hover {
+      transition: .5s;
+      color: #00e77f;
+    }
+
+    .content {
+      margin-left: 250px;
+      transition: margin-left 0.3s ease-in-out;
+      padding: 20px;
+      color: white;
+
+    }
+
+    .sidebar-collapsed {
+      padding-left: 10px;
+      width: 80px;
+    }
+
+    .content-collapsed {
+      margin-left: 80px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar" >
+  <button class="navbar-toggler" type="button" id="sidebar-toggle" style="background: none">
+    <i class="fa-solid fa-bars" style="color: white; font-size: 35px;"></i>
+  </button>
+  <a th:href="@{/admin/books}"  class="sidebar-option"><i class="fa-brands fa-leanpub"></i> Book</a>
+  <a th:href="@{/admin/category}"  class="sidebar-option"><i class="fa-brands fa-leanpub"></i> Category</a>
+  <a  th:href="@{/}" class="sidebar-option"><i class="fa-solid fa-arrow-right-from-bracket"></i> Exit</a>
+</div>
+<div layout:fragment="content" class="content" id="content">
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Toggle sidebar visibility
+    $('#sidebar-toggle').click(function() {
+      $('#sidebar').toggleClass('sidebar-collapsed');
+      $('#content').toggleClass('content-collapsed');
+    });
+  });
+</script>
+</body>
+</html>

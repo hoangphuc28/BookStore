@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="Instructor/instructor">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>Title</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <h1>Courses</h1>
+    <div  class="row">
+        <div th:each="course : ${listCourse}" class="col-md-4" >
+            <div class="card" style="background: #142052; border-radius: 50px 50px 10px 10px">
+                <form th:action="@{/instructor/course/edit/{id}(id=${course.id})}" method="get">
+                    <button style="background: none;padding: 0" type="submit">
+                <img th:src="${course.thumbnail}" class="card-img-top" alt="Course Image" />
+                    </button>
+                </form>
+
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${course.title}"></h5>
+                    <div class="card__content" th:if="${course.isPublish}">
+                        Published
+                    </div>
+
+                    <div th:if="${!course.isPublish}" style="display: flex; justify-content: space-between; align-items: center" class="card__content" th:else>
+                        Draft
+                        <button onclick="publish(this)"  th:attr="id=${course.id}" style="padding: 5px 25px; background: rgb(13, 144, 96)">Publish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<button class="btn-login" style="position: fixed; bottom: 30px; right: 30px">
+    <a th:href="@{/instructor/course/create}">New Course</a>
+</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:inline="javascript">
+        const publish = (btn) => {
+            let token = $("meta[name='_csrf']").attr("content");
+            let header = $("meta[name='_csrf_header']").attr("content");
+           let id = btn.getAttribute("id")
+            $.ajax({
+                url: `/instructor/course/publish/${id}`,
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (response) {
+                    alert(response)
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+    </script>
+</div>
+</body>
+</html>

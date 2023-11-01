@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="layout"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+
+    .active a {
+      color: #00e77f;
+    }
+    .active {
+      color: #00e77f;
+
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="courses">
+  <div class="courses__cover">
+    <div class="courses__intro">
+      <div class="intro__overlays"></div>
+      <div class="courses__title__left">
+        <div class="title">
+          <h1>
+            All <span>Courses</span>.
+          </h1>
+          <p>
+            <a th:href="@{/}">HOME</a> / ALL COURSES
+          </p>
+        </div>
+      </div>
+      <div class="courses__title__right">
+        <img src={cover3} alt="" />
+      </div>
+    </div>
+    <div class="title">
+      <h1>
+        Improve <span>Knowledge</span>
+        <br />
+        with the Best Courses.
+      </h1>
+    </div>
+    <div class="courses__content">
+      <div class="courses__content__cover">
+        <div class="courses__left"right>
+          <div class="courses__left__cover">
+            <h3>Product categories</h3>
+            <ul style="padding-left: 0">
+             <li>
+               <a  th:href="@{/books(page=__${currentPage+1}__) }">
+                  <div th:class="${filterCategory == 0} ? active" style="cursor:pointer">All</div>
+               </a>
+            </li>
+
+          <li th:each="category : ${categories}">
+            <a  th:href="@{/books(category=__${category.id}__) }">
+              <div th:class="${filterCategory == category.id} ? active" style="cursor: pointer" th:text="${category.name}"></div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="courses__right">
+
+      <div th:if="${filterCategory} == 0" class="list__courses">
+        <div th:each="course : ${courses}" th:if="${course.isPublish}" class="card" style="background: transparent">
+          <a  href="#">
+            <div class="card__cover">
+              <div class="card__top">
+                <div class="card__img">
+                  <img style="object-fit: cover" th:src="@{/img/}+${course.image}" alt="image-of-course">
+                </div>
+              </div>
+              <div class="card__bottom">
+                <div class=="card__title">
+                  <h6 class="truncate-10" th:text="${course.title}"></h6>
+                </div>
+                <div class=="card__evalute" th:text="${course.price}+'vnd'">
+
+                </div>
+<!--                <div class=="card__content" th:text="${course.category.name}"></div>-->
+              </div>
+              <form th:action="@{/cart/{id}(id=${course.id})}" method="post">
+                <button style="padding: 10px 20px;font-size: 12px;background: rgb(13, 144, 96);border: none;border-radius: 0px 30px 0px 30px;" class="btn btn-primary">Add To Cart</button>
+              </form>
+            </div>
+          </a>
+          <div style="cursor: pointer" class="card__price">
+
+
+          </div>
+        </div>
+      </div>
+      <div th:if="${filterCategory} != 0" class="list__courses">
+        <div th:each="course : ${courses}" class="card" style="background: transparent">
+          <a  href="#">
+            <div class="card__cover">
+              <div class="card__top">
+                <div class="card__img">
+                  <img th:src="@{/img/}+${course.image}" alt="image-of-course">
+                </div>
+              </div>
+              <div class="card__bottom">
+                <div class=="card__title">
+                  <h6 class="truncate-10" th:text="${course.title}"></h6>
+                </div>
+                <div class=="card__evalute" th:text="${course.price}+'vnd'">
+
+                </div>
+<!--                <div class=="card__content" th:text="${course.category.name}"></div>-->
+              </div>
+              <div style="cursor: pointer" class="card__price">
+                <form th:action="@{/cart/{id}(id=${course.id})}" method="post">
+                  <button style="padding: 10px 20px;font-size: 12px;background: rgb(13, 144, 96);border: none;border-radius: 0px 30px 0px 30px;" class="btn btn-primary">Add To Cart</button>
+                </form>
+              </div>
+            </div>
+          </a>
+
+
+      </div>
+        </div>
+      <div style="display: flex;justify-content: center; font-size: 25px; margin-top: 30px;">
+        <ul class="pagination">
+          <li th:if="${currentPage>=1}" th:class="${currentPage == 0} ? disabled">
+            <a th:href="@{/books(page=__${currentPage}__, category=__${filterCategory}__)}">&laquo;</a>
+          </li>
+
+          <li style="margin: 0 5px" th:each="page : ${#numbers.sequence(0, totalPages)}" th:class="${currentPage == page} ? active">
+            <a th:href="@{/books(page=__${page+1}__, category=__${filterCategory}__) }" th:text="${page+1}"></a>
+          </li>
+
+          <li th:if="${currentPage <= totalPages-1}" th:class="${currentPage == totalPages} ? disabled">
+            <a th:href="@{/books(page=__${currentPage+2}__, category=__${filterCategory}__)}">&raquo;</a>
+          </li>
+        </ul>
+      </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+
+  </script>
+</div>
+</div>
+
+</body>
+</html>

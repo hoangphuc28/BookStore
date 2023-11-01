@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="Instructor/instructor"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+    form {
+      width: 70%;
+    }
+    input {
+      background-color: #00082a;
+      border: 2px solid #465286;
+      border-radius: 15px;
+      flex: 1 1;
+      font-size: 16px;
+      margin-top: 1.5rem;
+      min-height: 50px;
+      outline: none;
+      padding: 0 20px;
+      width: 100%;
+    }
+    select {
+      background: #00082a;
+      border: 1px solid #445285;
+      border-radius: 5px;
+      font-size: 15px;
+      margin-left: 15px;
+      padding: 5px;
+      width: 200px;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content">
+<div style="display: flex; justify-content: center">
+<form th:action="@{/instructor/course/create}" th:object="${course}" method="POST" enctype = "multipart/form-data">
+  <div class="input">
+    <input th:field="*{title}" type="text" placeholder="Title"  id="title" name="title" required>
+  </div>
+  <div style="margin-top: 1.5rem">
+    <label for="category">Thể loại</label>
+    <select   type="text" id="category" name="category.id" placeholder="Enter category">
+      <option th:each="category : ${listCategories}" th:value="${category.id}" th:text="${category.getName()}"></option>
+    </select>
+  </div>
+  <button style="position: absolute; bottom: 30px; right: 30px; background: #0d9060" type="submit">Create</button>
+</form>
+</div>
+</div>
+</body>
+</html>

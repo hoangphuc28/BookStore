@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="Admin/Book/layoutBook"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+  <title>Home</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <style>
+    .book-card {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="book">
+  <div class="container">
+    <h1 style="color: black; margin-top: 25px;" class="text-center">List Book</h1>
+
+    <div class="row">
+      <div class="col-md-4" th:each="book : ${books}">
+        <div class="book-card">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-center" th:text="${book.getTitle()}"></h3>
+            </div>
+            <div class="card-body">
+              <div  style="display: flex; align-items: center; justify-content: space-between">
+                <div>
+              <div class="form-group">
+                <label for="author">Author:</label>
+                <p>
+                  <span style="color: black; font-weight: bold">Author: </span>
+                  <span style="color: black" id="author" th:text="${book.getAuthor()}"></span>
+                </p>
+              </div>
+              <div class="form-group">
+                <label for="price">Price:</label>
+                <p>
+                  <span style="color: black; font-weight: bold">Price: </span>
+                  <span  style="color: black" id="price" th:text="${book.getPrice()}"></span>
+                </p>
+              </div>
+              <div class="form-group">
+                <label for="category">Category:</label>
+                <p>
+                  <span style="color: black; font-weight: bold">Category: </span>
+                  <span style="color: black" id="category" th:text="${book.category.getName()}"></span>
+                </p>
+              </div>
+                  <div class="form-group">
+                    <label for="category">Quantity:</label>
+                    <p>
+                      <span style="color: black; font-weight: bold">Quantity: </span>
+                      <span style="color: black" id="quantity" th:text="${book.quantity}"></span>
+                    </p>
+                  </div>
+                </div>
+              <img style="width: 100px; height: 150px" th:src="@{/img/}+${book.image}">
+              </div>
+
+              <div sec:authorize="hasAnyAuthority('ADMIN')" class="text-center" style="display:flex;justify-content:space-around">
+                <form th:action="@{/admin/book/edit/{id}(id=${book.id})}" method="post">
+                  <button class="btn btn-primary" type="submit">
+                    Edit
+                  </button>
+                </form>
+                <!--              <form th:action="@{/book/delete/{id}(id=${book.id})}" method="post">-->
+                <!--                <button onclick="return confirm('Có muốn chắc là xóa hơm?')" class="btn btn-danger" type="submit">-->
+                <!--                  Delete-->
+                <!--                </button>-->
+                <!--              </form>-->
+                <a th:href="@{/admin/book/delete/{id}(id=${book.id})}" onclick="deleteBook(this)">
+                  Delete
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script th:inline="javascript">
+    const deleteBook = (link) => {
+
+      let token = $("meta[name='_csrf']").attr("content");
+      let header = $("meta[name='_csrf_header']").attr("content");
+      if(confirm('Có muốn chắc là xóa hơm?')) {
+        event.preventDefault();
+        $.ajax({
+          url:$(link).attr('href'),
+          type: 'DELETE',
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+          },
+          success: function(response) {
+            console.log(response);
+            window.location.href = '/admin/books';
+          },
+          error: function(xhr, status, error) {
+            console.log(xhr);
+            window.location.href = '/admin/books';
+
+          }
+        })
+      } else {
+        event.preventDefault();
+
+      }
+    }
+  </script>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

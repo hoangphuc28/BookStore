@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="Instructor/instructor"
+>
+<head>
+  <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+  <title>Title</title>
+  <style>
+    form {
+      width: 70%;
+    }
+    input {
+      background-color: #00082a;
+      border: 2px solid #465286;
+      border-radius: 15px;
+      flex: 1 1;
+      font-size: 16px;
+      margin-top: 1.5rem;
+      min-height: 50px;
+      outline: none;
+      padding: 0 20px;
+      width: 100%;
+    }
+    select {
+      background: #00082a;
+      border: 1px solid #445285;
+      border-radius: 5px;
+      font-size: 15px;
+      margin-left: 15px;
+      padding: 5px;
+      width: 200px;
+    }
+  </style>
+
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="loading-cover">
+  <div class="spinner-3"></div>
+  </div>
+  <div style="display: flex; justify-content: center">
+<!--    <form id="myForm" th:action="@{/instructor/course/manage}" th:object="${course}" method="POST" enctype = "multipart/form-data">-->
+    <form th:attr="data=${course.id}" id="myForm"  th:object="${course}">
+      <div class="input">
+        <input th:field="*{title}" type="text" placeholder="Title"  id="title" name="title" required>
+      </div>
+      <div class="input">
+        <input th:field="*{description}" type="text" placeholder="Description"  id="description" name="description">
+      </div>
+      <div style="margin-top: 1.5rem">
+        <label for="category">Thể loại</label>
+        <select   type="text" id="category" name="category" placeholder="Enter category">
+          <option th:selected="${category.id} == *{category.id}" th:each="category : ${listCategories}" th:value="${category.id}" th:text="${category.getName()}"></option>
+        </select>
+      </div>
+      <div class="input" style="marginTop: 1.5rem">
+        <input th:field="*{price}" type="number" placeholder="Price"  id="price" name="price" required>
+      </div>
+      <div style="margin-top: 1.5rem">
+        <label htmlFor="img" style="display: block">Thumbnail
+        </label>
+        <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px;">
+        <img th:src="*{thumbnail}" style="width: 200px; height: 200px; object-fit: cover; margin-right: 25px" alt="thumbnail"/>
+        <input class="form-control" type="file" id="thumbnail" name="thumbnail" accept="image/png, image/jpeg">
+        </div>
+      </div>
+      <h4>Bài học</h4>
+
+      <div  style="margin-top: 20px; min-height: 100px" id="lectureContainer">
+        <div  th:each="l : *{lectures}">
+          <div class="lecture" style="position: relative; margin-bottom:50px">
+            <input type="hidden" th:value="${l.id}"/>
+        <input class="lectureTitle" th:value="${l.name}" type="text" name="lectureTitle" placeholder="Tiêu đề bài học">
+        <input  accept="video/*" className="form-control" type="file" id="video" name="video">
+            <iframe width="420" height="345" th:src="${l.video}">
+            </iframe>
+          <button onclick="removeLecture(this)" type="button"
+                  style="background: rgb(157, 48, 63); position: absolute; bottom: -40px; right:0; padding: 5px 30px;"
+                  class="removeLectureBtn">Xóa</button>
+      </div>
+        </div>
+      </div>
+      <button style="background: #0d9060;padding: 10px 25px;" type="button" id="addLectureBtn"  onclick="addLecture()">Add lecture</button>
+      <button style="position: fixed; bottom: 30px; right: 30px; background: #0d9060" type="submit">Save</button>
+
+    </form>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script th:inline="javascript">
+    const addLecture = () => {
+      let newLectureDiv = $('<div class="lecture" style="position: relative; margin-bottom:50px">');
+      newLectureDiv.append('<button onclick="removeLecture(this)" type="button" style="background: rgb(157, 48, 63); position: absolute; bottom: -40px; right:0; padding: 5px 30px;" class="removeLectureBtn">Xóa</button>');
+      newLectureDiv.append('<input type="hidden" value="new"/>');
+      newLectureDiv.append('<input class="lectureTitle"  type="text" name="lectureTitle" placeholder="Tiêu đề bài học">');
+      newLectureDiv.append('<input accept="video/*" className="form-control" type="file" id="video" name="video">');
+      $("#lectureContainer").append(newLectureDiv);
+    };
+    const removeLecture = (button) =>  {
+      let cf = window.confirm("Are you sure you want to delete this lecture?");
+      if(cf) {
+        $(button).closest(".lecture").remove();
+        const id = $(button).closest(".lecture").find('input').eq(0).val()
+        console.log(id)
+        let token = $("meta[name='_csrf']").attr("content");
+        let header = $("meta[name='_csrf_header']").attr("content");
+        if (id != "new") {
+          $.ajax({
+            url: `http://localhost:8080/instructor/course/lecture/${id}`,
+            type: 'DELETE',
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token);
+            },
+            success: function (response) {
+              console.log(response)
+            },
+            error: function (error) {
+              console.log(error);
+            }
+          });
+        }
+      }
+
+    };
+    const uploadFile =  (file) => {
+      const formData = new FormData()
+      let url
+      formData.append("file", file)
+      let token = $("meta[name='_csrf']").attr("content");
+      let header = $("meta[name='_csrf_header']").attr("content");
+      return $.ajax({
+        url:"http://localhost:8080/instructor/course/video",
+        type: 'POST',
+        data: formData,
+        contentType: false, // Không set Content-Type để tự động xác định
+        processData: false, // Không xử lý dữ liệu
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader(header, token);
+        },
+      });
+    }
+
+
+    document.getElementById('myForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const loading = document.querySelector(".loading-cover")
+      loading.style.display= "flex"
+      let id = this.getAttribute("data")
+      const formData = new FormData(this);
+      formData.set("id", id);
+      let lectureFields = document.querySelectorAll(".lectureTitle");
+      let lectures = [];
+      for (const lectureField of lectureFields) {
+        let lectureTitle = lectureField.value;
+        let lectureVideo = lectureField.nextElementSibling.files[0];
+        let id = lectureField.previousElementSibling.value// Get the selected image file
+        let lecture = {
+          id: id,
+          title: lectureTitle,
+          video: ""
+        };
+        console.log(lectureField.previousElementSibling.value)
+
+        if(lectureVideo == undefined) {
+          if(lectureField.nextElementSibling.nextElementSibling != null) {
+            lecture.video = lectureField.nextElementSibling.nextElementSibling.src
+          }
+
+        } else {
+          try {
+            const res = await uploadFile(lectureVideo)
+            lecture.video = res
+            if(lecture.title != "" && lecture.video != "") {
+              lectures.push(lecture);
+            }
+
+          } catch(err) {
+            console.log(err);
+          }
+        }
+        if(lecture.title != "" && lecture.video != "") {
+          formData.append("lecturesTitle", lecture.title)
+          formData.append("lecturesId", lecture.id)
+          formData.append("lecturesVideo", lecture.video)
+        }
+      }
+      console.log(formData.getAll("lecturesId"))
+      const course = Object.fromEntries(formData.entries())
+      saveCourse(formData)
+      loading.style.display= "none"
+
+    });
+    const saveCourse = (formData) => {
+      let token = $("meta[name='_csrf']").attr("content");
+      let header = $("meta[name='_csrf_header']").attr("content");
+      const course = Object.fromEntries(formData.entries())
+      $.ajax({
+        url:"http://localhost:8080/instructor/course/edit",
+        type: 'POST',
+        data: formData,
+        contentType: false, // Không set Content-Type để tự động xác định
+        processData: false, // Không xử lý dữ liệu
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader(header, token);
+        },
+        success: function(response) {
+           window.location.replace(response)
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    }
+  </script>
+</div>
+
+</body>
+</html>
