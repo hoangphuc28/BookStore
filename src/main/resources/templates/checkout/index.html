@@ -280,6 +280,7 @@
     <div class="price">
       <h1>Awesome, that's <span th:text="${total}"></span> !</h1>
     </div>
+    <form th:action="@{/checkout/confirm}" th:object="${customer}" method="POST">
     <div class="card__container">
       <div class="card" style="background-color: #1E2148;">
         <div class="row paypal">
@@ -301,19 +302,25 @@
         <div class="row cardholder">
           <div class="info">
             <label for="cardholdername">Name</label>
-            <input placeholder="e.g. Richard Bovell" id="cardholdername" type="text" />
+            <input th:field="*{name}" placeholder="Nguyen Van A" id="cardholdername" type="text" />
+          </div>
+        </div>
+        <div class="row cardholder">
+          <div class="info">
+            <label for="email">Email</label>
+            <input  th:field="*{email}" placeholder="abc@gmail.com" id="email" type="text" />
           </div>
         </div>
         <div class="row number">
           <div class="info">
             <label for="phonenumber">Phone number</label>
-            <input id="phonenumber" type="text" pattern="[0-9]{16,19}" maxlength="19" placeholder="88-8888-8888"/>
+            <input  th:field="*{phone}" id="phonenumber" type="text"  maxlength="19" placeholder="88-8888-8888"/>
           </div>
         </div>
         <div class="row number">
           <div class="info">
-            <label for="address">Address number</label>
-            <input id="address" type="text"  maxlength="200" placeholder="New York"/>
+            <label for="address">Address</label>
+            <input  th:field="*{address}" id="address" type="text"  maxlength="200" placeholder="Ho Chi Minh"/>
           </div>
         </div>
       </div>
@@ -321,6 +328,7 @@
     <div class="button">
       <button style="background: #18C2C0" type="submit">Confirm and Pay</button>
     </div>
+    </form>
   </div>
 </div>
 </body>

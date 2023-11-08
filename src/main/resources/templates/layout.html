@@ -46,26 +46,22 @@
             </div>
         </div>
         <div class="header_right">
-            <button sec:authorize="!isAuthenticated()" onClick={props.openMenu}>
+            <button sec:authorize="!isAuthenticated()">
                 <a class="header_option" th:href="@{/login}" >Login</a>
             </button>
-            <button  sec:authorize="hasAnyAuthority('ADMIN')" onClick={props.openMenu}>
+            <button  sec:authorize="hasAnyAuthority('ADMIN')">
                 <a class="header_option" th:href="@{/admin}">Admin</a>
             </button>
-            <button  onClick={props.openMenu}>
-                <a class="header_option"  th:href="@{/books}">Book</a>
+            <button >
+                <a class="header_option"  th:href="@{/products}">Plants</a>
             </button>
-
+            <button>
+                <a class="header_option" style="padding: 0" th:href="@{/cart}">Cart</a>
+            </button>
             <button style="margin-left: 10px"  class="dropdown">
                 <p sec:authorize="isAuthenticated()"  sec:authentication="name" class="dropdown-toggle header_option" style="color: white; margin: 0" data-toggle="dropdown">Hover để xem</p>
                 <div style="background: #141c3d; padding: 10px" class="dropdown-menu">
                     <ul class="list-unstyled">
-                        <li style="margin: 10px 0; display:block;">
-                                <a style="padding: 0" th:href="@{/cart}">Cart</a>
-                        </li>
-                        <li style="margin: 10px 0; display:block;">
-                            <a style="padding: 0" th:href="@{/my-course}">My Learning</a>
-                        </li>
 
                         <li>
                                 <a style="padding: 0" sec:logout th:href="@{/logout}">Logout</a>

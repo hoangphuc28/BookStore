@@ -27,10 +27,10 @@
       <div class="courses__title__left">
         <div class="title">
           <h1>
-            All <span>Courses</span>.
+            All <span>Plants</span>.
           </h1>
           <p>
-            <a th:href="@{/}">HOME</a> / ALL COURSES
+            <a th:href="@{/}">HOME</a> / ALL PLANTS
           </p>
         </div>
       </div>
@@ -40,9 +40,9 @@
     </div>
     <div class="title">
       <h1>
-        Improve <span>Knowledge</span>
+        Improve <span>Space</span>
         <br />
-        with the Best Courses.
+        with the Best Plants.
       </h1>
     </div>
     <div class="courses__content">
@@ -52,13 +52,13 @@
             <h3>Product categories</h3>
             <ul style="padding-left: 0">
              <li>
-               <a  th:href="@{/books(page=__${currentPage+1}__) }">
+               <a  th:href="@{/products(page=__${currentPage+1}__) }">
                   <div th:class="${filterCategory == 0} ? active" style="cursor:pointer">All</div>
                </a>
             </li>
 
           <li th:each="category : ${categories}">
-            <a  th:href="@{/books(category=__${category.id}__) }">
+            <a  th:href="@{/products(category=__${category.id}__) }">
               <div th:class="${filterCategory == category.id} ? active" style="cursor: pointer" th:text="${category.name}"></div>
             </a>
           </li>
@@ -68,12 +68,12 @@
     <div class="courses__right">
 
       <div th:if="${filterCategory} == 0" class="list__courses">
-        <div th:each="course : ${courses}" th:if="${course.isPublish}" class="card" style="background: transparent">
+        <div th:each="course : ${courses}" th:if="${course.isPublish and course.quantity>0}" class="card" style="background: transparent">
           <a  href="#">
             <div class="card__cover">
               <div class="card__top">
                 <div class="card__img">
-                  <img style="object-fit: cover" th:src="@{/img/}+${course.image}" alt="image-of-course">
+                  <img style="object-fit: cover; width: 100px; height: 150px" th:src="@{/img/}+${course.image}" alt="image-of-course">
                 </div>
               </div>
               <div class="card__bottom">
@@ -97,12 +97,12 @@
         </div>
       </div>
       <div th:if="${filterCategory} != 0" class="list__courses">
-        <div th:each="course : ${courses}" class="card" style="background: transparent">
+        <div th:each="course : ${courses}" th:if="${course.isPublish and course.quantity>0}" class="card" style="background: transparent">
           <a  href="#">
             <div class="card__cover">
               <div class="card__top">
                 <div class="card__img">
-                  <img th:src="@{/img/}+${course.image}" alt="image-of-course">
+                  <img style="width: 100px; height: 150px" th:src="@{/img/}+${course.image}" alt="image-of-course">
                 </div>
               </div>
               <div class="card__bottom">
@@ -128,15 +128,15 @@
       <div style="display: flex;justify-content: center; font-size: 25px; margin-top: 30px;">
         <ul class="pagination">
           <li th:if="${currentPage>=1}" th:class="${currentPage == 0} ? disabled">
-            <a th:href="@{/books(page=__${currentPage}__, category=__${filterCategory}__)}">&laquo;</a>
+            <a th:href="@{/products(page=__${currentPage}__, category=__${filterCategory}__)}">&laquo;</a>
           </li>
 
           <li style="margin: 0 5px" th:each="page : ${#numbers.sequence(0, totalPages)}" th:class="${currentPage == page} ? active">
-            <a th:href="@{/books(page=__${page+1}__, category=__${filterCategory}__) }" th:text="${page+1}"></a>
+            <a th:href="@{/products(page=__${page+1}__, category=__${filterCategory}__) }" th:text="${page+1}"></a>
           </li>
 
           <li th:if="${currentPage <= totalPages-1}" th:class="${currentPage == totalPages} ? disabled">
-            <a th:href="@{/books(page=__${currentPage+2}__, category=__${filterCategory}__)}">&raquo;</a>
+            <a th:href="@{/products(page=__${currentPage+2}__, category=__${filterCategory}__)}">&raquo;</a>
           </li>
         </ul>
       </div>

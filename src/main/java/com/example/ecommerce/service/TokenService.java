@@ -34,7 +34,7 @@ public class TokenService {
 
         return new User(email, name, phone);
     }
-    public String generateTokenCourses(List<String> courses) {
+    public String generateTokenCourses(String courses) {
         Claims claims = Jwts.claims();
         claims.put("courses", courses);
 

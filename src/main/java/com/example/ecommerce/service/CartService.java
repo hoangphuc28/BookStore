@@ -1,6 +1,6 @@
 package com.example.ecommerce.service;
 
-import com.example.ecommerce.model.Book;
+import com.example.ecommerce.model.Product;
 import com.example.ecommerce.model.CartProduct;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
@@ -16,7 +16,7 @@ public class CartService {
         cartItems = new ArrayList<>();
     }
 
-    public void addProduct(Book book) {
+    public void addProduct(Product book) {
         for (CartProduct item : cartItems) {
             if (item.getBook().getId().equals(book.getId())) {
                 item.setQuantity(item.getQuantity() + 1);

@@ -67,9 +67,20 @@
                 <div class="summary-item"><span class="text">Discount</span><span class="price">0</span></div>
                 <div class="summary-item"><span class="text">Shipping</span><span class="price">0</span></div>
                 <div class="summary-item"><span class="text">Total</span><span class="price" th:text="${total}">$360</span></div>
-                <form th:action="@{/cart/checkout}" method="post">
+                <div  sec:authorize="!isAuthenticated()" >
+                <form th:action="@{/checkout}" method="post">
                   <input type="hidden" name="total" th:value="${total}" />
-                <button style="background: #18C2C0" type="submit" class="btn btn-primary btn-lg btn-block">Checkout</button>
+                <button style="background: #18C2C0" type="submit" class="btn btn-primary btn-lg btn-block">Guest Checkout</button>
+                </form>
+                  <button style="background: #18C2C0" type="submit" class="btn btn-primary btn-lg btn-block">
+                    <a class="header_option" th:href="@{/login}" >
+                      Member Checkout
+                    </a>
+                  </button>
+                </div>
+                <form sec:authorize="isAuthenticated()" th:action="@{/checkout}" method="post">
+                  <input type="hidden" name="total" th:value="${total}" />
+                  <button style="background: #18C2C0" type="submit" class="btn btn-primary btn-lg btn-block">Member Checkout</button>
                 </form>
               </div>
             </div>

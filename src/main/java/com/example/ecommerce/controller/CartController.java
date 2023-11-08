@@ -1,8 +1,8 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.model.Book;
+import com.example.ecommerce.model.Product;
 import com.example.ecommerce.service.CartService;
-import com.example.ecommerce.service.BookService;
+import com.example.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +14,7 @@ public class CartController {
     private CartService cartService;
 
     @Autowired
-    private BookService bookService;
+    private ProductService bookService;
     @GetMapping("cart")
     private String index(Model model) {
         var courses = cartService.getCartItems();
@@ -39,18 +39,12 @@ public class CartController {
 
     @PostMapping("/cart/{id}")
     public String addToCart(@PathVariable Long id) {
-        Book product = bookService.getBook(id);
+        Product product = bookService.getBook(id);
 
         if (product != null) {
             cartService.addProduct(product);
         }
-        return "redirect:/books";
-    }
-    @PostMapping("/cart/checkout")
-    public String checkout(Model model, @RequestParam String total) {
-        System.out.println(total);
-        model.addAttribute("total", total);
-        return "Cart/checkout";
+        return "redirect:/products";
     }
     @PostMapping("/cart/update")
     @ResponseBody

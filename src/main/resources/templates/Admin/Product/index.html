@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="Admin/Book/layoutBook"
+      layout:decorate="Admin/Product/layoutProduct"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
@@ -19,64 +19,69 @@
 <body>
 <div layout:fragment="book">
   <div class="container">
-    <h1 style="color: black; margin-top: 25px;" class="text-center">List Book</h1>
+    <h1 style="color: black; margin-top: 25px;" class="text-center">List Plants</h1>
 
     <div class="row">
-      <div class="col-md-4" th:each="book : ${books}">
+      <div class="col-md-4" th:each="product : ${products}">
         <div class="book-card">
           <div class="card">
             <div class="card-header">
-              <h3 class="text-center" th:text="${book.getTitle()}"></h3>
+              <h3 class="text-center" th:text="${product.getTitle()}"></h3>
             </div>
             <div class="card-body">
               <div  style="display: flex; align-items: center; justify-content: space-between">
                 <div>
               <div class="form-group">
-                <label for="author">Author:</label>
+                <label for="author">Description:</label>
                 <p>
-                  <span style="color: black; font-weight: bold">Author: </span>
-                  <span style="color: black" id="author" th:text="${book.getAuthor()}"></span>
+                  <span style="color: black; font-weight: bold">Description: </span>
+                  <span style="color: black" id="author" th:text="${product.getDescription()}"></span>
                 </p>
               </div>
               <div class="form-group">
                 <label for="price">Price:</label>
                 <p>
                   <span style="color: black; font-weight: bold">Price: </span>
-                  <span  style="color: black" id="price" th:text="${book.getPrice()}"></span>
+                  <span  style="color: black" id="price" th:text="${product.getPrice()}"></span>
                 </p>
               </div>
               <div class="form-group">
                 <label for="category">Category:</label>
                 <p>
                   <span style="color: black; font-weight: bold">Category: </span>
-                  <span style="color: black" id="category" th:text="${book.category.getName()}"></span>
+                  <span style="color: black" id="category" th:text="${product.category.getName()}"></span>
                 </p>
               </div>
                   <div class="form-group">
                     <label for="category">Quantity:</label>
                     <p>
                       <span style="color: black; font-weight: bold">Quantity: </span>
-                      <span style="color: black" id="quantity" th:text="${book.quantity}"></span>
+                      <span style="color: black" id="quantity" th:text="${product.quantity}"></span>
                     </p>
                   </div>
                 </div>
-              <img style="width: 100px; height: 150px" th:src="@{/img/}+${book.image}">
+              <img style="width: 100px; height: 150px" th:src="@{/img/}+${product.image}">
               </div>
 
               <div sec:authorize="hasAnyAuthority('ADMIN')" class="text-center" style="display:flex;justify-content:space-around">
-                <form th:action="@{/admin/book/edit/{id}(id=${book.id})}" method="post">
+                <form th:action="@{/admin/product/edit/{id}(id=${product.id})}" method="post">
                   <button class="btn btn-primary" type="submit">
                     Edit
                   </button>
                 </form>
-                <!--              <form th:action="@{/book/delete/{id}(id=${book.id})}" method="post">-->
-                <!--                <button onclick="return confirm('Có muốn chắc là xóa hơm?')" class="btn btn-danger" type="submit">-->
-                <!--                  Delete-->
-                <!--                </button>-->
-                <!--              </form>-->
-                <a th:href="@{/admin/book/delete/{id}(id=${book.id})}" onclick="deleteBook(this)">
+                <a th:href="@{/admin/product/delete/{id}(id=${product.id})}" onclick="deleteProduct(this)">
                   Delete
                 </a>
+                <form th:if="${product.getIsPublish()}" th:action="@{/admin/product/unpublish/{id}(id=${product.id})}" method="post">
+                  <button class="btn btn-primary" type="submit">
+                    UnPublish
+                  </button>
+                </form>
+                <form th:if="${!product.getIsPublish()}" th:action="@{/admin/product/publish/{id}(id=${product.id})}" method="post">
+                  <button class="btn btn-primary" type="submit">
+                    Publish
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -87,7 +92,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script th:inline="javascript">
-    const deleteBook = (link) => {
+    const deleteProduct = (link) => {
 
       let token = $("meta[name='_csrf']").attr("content");
       let header = $("meta[name='_csrf_header']").attr("content");
@@ -101,11 +106,11 @@
           },
           success: function(response) {
             console.log(response);
-            window.location.href = '/admin/books';
+            window.location.href = '/admin/products';
           },
           error: function(xhr, status, error) {
             console.log(xhr);
-            window.location.href = '/admin/books';
+            window.location.href = '/admin/products';
 
           }
         })

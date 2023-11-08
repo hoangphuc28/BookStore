@@ -1,7 +1,7 @@
 package com.example.ecommerce.controller.admin;
 
 import com.example.ecommerce.model.Category;
-import com.example.ecommerce.service.BookService;
+import com.example.ecommerce.service.ProductService;
 import com.example.ecommerce.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
     @Autowired
-    private BookService bookService;
+    private ProductService bookService;
     @GetMapping("/admin/category")
     public String showCategories(Model model) {
         model.addAttribute("cateEdit", new Category());

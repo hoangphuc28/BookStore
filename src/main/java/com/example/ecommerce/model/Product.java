@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Data
 @Getter
@@ -14,8 +17,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="book")
-public class Book {
+@Table(name="product")
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,10 +26,6 @@ public class Book {
     @NotBlank(message = "Trường này không được để trống!")
     @Column(name="title")
     private String title;
-    @NotBlank(message = "Trường này không được để trống!")
-    @Column(name="author")
-    private String author;
-
 
     @NotNull(message = "Giá sản phẩm không được để trống")
     @Min(value = 10000, message = "Giá sản phẩm không được bé hơn 10000")
@@ -56,4 +55,8 @@ public class Book {
 
     @Column(name = "description", length = 250, nullable = true)
     private String description;
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+
 }

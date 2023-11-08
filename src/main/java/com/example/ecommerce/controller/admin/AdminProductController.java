@@ -1,7 +1,7 @@
 package com.example.ecommerce.controller.admin;
 
-import com.example.ecommerce.model.Book;
-import com.example.ecommerce.service.BookService;
+import com.example.ecommerce.model.Product;
+import com.example.ecommerce.service.ProductService;
 import com.example.ecommerce.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,35 +23,35 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-public class AdminBookController {
+public class AdminProductController {
     @Autowired
-    private BookService bookService;
+    private ProductService bookService;
 
     @Autowired
     private CategoryService categoryService;
     @Autowired
     private ResourceLoader resourceLoader;
 
-    @GetMapping("/admin/books")
+    @GetMapping("/admin/products")
     public String Home(Model model) {
-        List<Book> books = bookService.getAllBook();
-            model.addAttribute("books", books);
-        return "Admin/Book/index";
+        List<Product> products = bookService.getAllBook();
+            model.addAttribute("products", products);
+        return "Admin/Product/index";
     }
-    @GetMapping("/admin/book/create")
+    @GetMapping("/admin/product/create")
     public String CreateBook(Model model) {
-        model.addAttribute("book", new Book());
+        model.addAttribute("product", new Product());
         model.addAttribute("listCategory", categoryService.getAllCategories());
-        return "Admin/Book/create";
+        return "Admin/Product/create";
     }
-    @PostMapping("/admin/book/create")
-    public String CreateBook(@Valid Book book, BindingResult res, Model model,
+    @PostMapping("/admin/product/create")
+    public String CreateBook(@Valid Product product, BindingResult res, Model model,
                              @RequestParam MultipartFile imageProduct
                              ) throws IOException {
         if(res.hasErrors()) {
-            model.addAttribute("book", book);
+            model.addAttribute("book", product);
             model.addAttribute("listCategory", categoryService.getAllCategories());
-            return "Admin/Book/create";
+            return "Admin/Product/create";
         }
         if(imageProduct != null && imageProduct.getSize() > 0)
         {
@@ -60,39 +60,40 @@ public class AdminBookController {
                 String newImageFile = UUID.randomUUID() +  ".png";
                 Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + newImageFile);
                 Files.copy(imageProduct.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-                book.setImage(newImageFile);
+                product.setImage(newImageFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        bookService.addBook(book);
-        return "redirect:/admin/books";
+        product.setIsPublish(false);
+        bookService.addBook(product);
+        return "redirect:/admin/products";
     }
-    @DeleteMapping("/admin/book/delete/{id}")
+    @DeleteMapping("/admin/product/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
         bookService.removeBook(id);
-        return "redirect:/admin/books";
+        return "redirect:/admin/product";
     }
-    @GetMapping("/admin/book/delete/{id}")
+    @GetMapping("/admin/product/delete/{id}")
     public String getDelete() {
         return "redirect:/";
     }
-    @PostMapping("/admin/book/edit/{id}")
+    @PostMapping("/admin/product/edit/{id}")
     public String edit(@PathVariable("id") Long id, Model model) {
-        var book = bookService.getBook(id);
-        model.addAttribute("book", book);
+        var product = bookService.getBook(id);
+        model.addAttribute("product", product);
         model.addAttribute("listCategory", categoryService.getAllCategories());
-        return "Admin/Book/edit";
+        return "Admin/Product/edit";
     }
-    @PostMapping("/admin/book/edit")
-    public String edit(Model model,@Valid Book newBook, BindingResult res,
+    @PostMapping("/admin/product/edit")
+    public String edit(Model model, @Valid Product newBook, BindingResult res,
                        @RequestParam MultipartFile imageProduct
 
                        ) {
         if(res.hasErrors()) {
-            model.addAttribute("book", newBook);
+            model.addAttribute("product", newBook);
             model.addAttribute("listCategory", categoryService.getAllCategories());
-            return "Admin/Book/edit";
+            return "Admin/Product/edit";
         }
         if(imageProduct != null && imageProduct.getSize() > 0)
         {
@@ -107,6 +108,20 @@ public class AdminBookController {
             }
         }
         bookService.update(newBook);
-        return "redirect:/admin/books";
+        return "redirect:/admin/products";
+    }
+    @PostMapping("/admin/product/publish/{id}")
+    public String publish(@PathVariable("id") Long id) {
+        var product = bookService.getBook(id);
+        product.setIsPublish(true);
+        bookService.update(product);
+        return "redirect:/admin/products";
+    }
+    @PostMapping("/admin/product/unpublish/{id}")
+    public String unpublish(@PathVariable("id") Long id) {
+        var product = bookService.getBook(id);
+        product.setIsPublish(false);
+        bookService.update(product);
+        return "redirect:/admin/products";
     }
 }
